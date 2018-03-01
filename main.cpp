@@ -1099,9 +1099,9 @@ void drawAllKinectJoints()
 int main(int argc, char* argv[])
 {
 	// Initialize variables
-	posObject.x = -0.3;
-	posObject.y = -0.1;
-	posObject.z = 1.0;
+	posObject.x = 0.98;
+	posObject.y = -0.12;
+	posObject.z =0.1;
 	fSize = 0.06;
 	bTouchObject = false;
 	iFrame = 0;
