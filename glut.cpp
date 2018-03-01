@@ -44,11 +44,21 @@ void drawRain()
 		glPushMatrix();
 		//light blue colour for rain
 		//glColor3f(0.3, 0.3, 0.9);
-		glColor4f(0.3, 0.3, 1.0, 0.2);
+		if (bDetectLeftArmRaised && bDetectRightArmRaised)
+		{
+			glColor4f((float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), 0.5);
+		}
+		else
+		{
+			glColor4f(0.3, 0.3, 1.0, 0.2);
+		}
 		glTranslatef(v4PosRain[i].x, v4PosRain[i].y, v4PosRain[i].z);
 		//changing the size of the cube to mimic raindrops
-		glScalef(0.2f, 2.5f, 0.2f);
-		glutSolidCube(0.05);
+		if (bDetectLeftArmRaised && bDetectRightArmRaised)
+		{
+			glScalef(0.2f, 2.5f, 0.2f);
+			glutSolidCube(0.05);
+		}
 		glPopMatrix();
 	}
 	glDisable(GL_BLEND);
