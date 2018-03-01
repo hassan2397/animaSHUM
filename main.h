@@ -2,7 +2,7 @@
 
 #include "glut.h"
 
-//#define KINECT_SUPPORT
+#define KINECT_SUPPORT
 //#define KINECT_VOXEL_DRAW
 
 const int width = 640;
@@ -29,8 +29,10 @@ void actionCheckRightFootSwing();
 void actionCheckWave();
 void actionCheckSitting();
 void actionCheckHandsClapping();
+void actionCheckMoving();
 void drawActions();
 
+void drawCollision();
 void drawKinectHead();
 void drawKinectFullTorso();
 void drawKinectLowerTorso();
@@ -49,7 +51,5 @@ void drawKinectLegLeftLower();
 void drawKinectLegRightLower();
 
 void drawRain();
-
-
 
 int main(int argc, char* argv[]);
