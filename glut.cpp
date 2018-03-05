@@ -53,7 +53,7 @@ void drawRain()
 			glColor4f(0.3, 0.3, 1.0, 0.2);
 		}
 		glTranslatef(v4PosRain[i].x, v4PosRain[i].y, v4PosRain[i].z);
-		//changing the size of the cube to mimic raindrops
+		//changing the scale of the cube to mimic raindrops
 		if (bDetectLeftArmRaised && bDetectRightArmRaised)
 		{
 			glScalef(0.2f, 2.5f, 0.2f);
