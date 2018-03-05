@@ -2,7 +2,7 @@
 
 #include "glut.h"
 
-#define KINECT_SUPPORT
+//#define KINECT_SUPPORT
 //#define KINECT_VOXEL_DRAW
 
 const int width = 640;
