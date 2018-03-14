@@ -35,7 +35,7 @@ bool bDetectJump;
 Vector4 posHPast;
 // Past position of the left hand
 Vector4 posLHPast;
-// Past position of the left hand
+// Past position of the right hand
 Vector4 posRHPast;
 //Past position of the right foot
 Vector4 posRFPast;
@@ -143,7 +143,7 @@ void getSkeletalData()
 	posLHPast.x = skeletonPosition[NUI_SKELETON_POSITION_HAND_LEFT].x;
 	posLHPast.y = skeletonPosition[NUI_SKELETON_POSITION_HAND_LEFT].y;
 	posLHPast.z = skeletonPosition[NUI_SKELETON_POSITION_HAND_LEFT].z;
-	// Backup the left hand position before it is overwritten
+	// Backup the right hand position before it is overwritten
 	posRHPast.x = skeletonPosition[NUI_SKELETON_POSITION_HAND_RIGHT].x;
 	posRHPast.y = skeletonPosition[NUI_SKELETON_POSITION_HAND_RIGHT].y;
 	posRHPast.z = skeletonPosition[NUI_SKELETON_POSITION_HAND_RIGHT].z;
@@ -151,11 +151,11 @@ void getSkeletalData()
 	posRFPast.x = skeletonPosition[NUI_SKELETON_POSITION_FOOT_RIGHT].x;
 	posRFPast.y = skeletonPosition[NUI_SKELETON_POSITION_FOOT_RIGHT].y;
 	posRFPast.z = skeletonPosition[NUI_SKELETON_POSITION_FOOT_RIGHT].z;
-	// Backup the right foot position before it is overwritten
+	// Backup the head position before it is overwritten
 	posHPast.x = skeletonPosition[NUI_SKELETON_POSITION_HEAD].x;
 	posHPast.y = skeletonPosition[NUI_SKELETON_POSITION_HEAD].y;
 	posHPast.z = skeletonPosition[NUI_SKELETON_POSITION_HEAD].z;
-	// Backup the right foot position before it is overwritten
+	// Backup the hip center position before it is overwritten
 	posHCPast.x = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].x;
 	posHCPast.y = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].y;
 	posHCPast.z = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].z;
@@ -186,6 +186,7 @@ void getSkeletalData()
 	actionCheckArmSpread();
 	actionCheckFeetClose();
 	actionCheckLeftHandSwing();
+
 	actionCheckLeftArmRaised();
 	actionCheckRightArmRaised();
 	actionCheckRightFootSwing();
@@ -1099,10 +1100,10 @@ void drawAllKinectJoints()
 int main(int argc, char* argv[])
 {
 	// Initialize variables
-	posObject.x = 0.98;
-	posObject.y = -0.12;
-	posObject.z =0.1;
-	fSize = 0.06;
+	posObject.x = 0.50;
+	posObject.y = -0.155;
+	posObject.z =1.1;
+	fSize = 0.05;
 	bTouchObject = false;
 	iFrame = 0;
 	// Main loop

@@ -20,6 +20,7 @@ extern Vector4 skeletonPosition[NUI_SKELETON_POSITION_COUNT]; // Current frame p
 
 extern bool bDetectLeftArmRaised; 
 extern bool bDetectRightArmRaised;
+extern bool bTouchObject;
 
 //Variables for the environment 
 const float fFloorY = -1.3;//Floor
@@ -32,29 +33,29 @@ const float fRoofY = 1.3;//Roof
 // End of global variables
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void drawRain() 
+void drawRain()
 {
 	//enable transparency
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	// Draw the rain particles
 	for (int i = 0; i < 1000; i++)
+
 	{
 		glPushMatrix();
 		//light blue colour for rain
 		//glColor3f(0.3, 0.3, 0.9);
 		if (bDetectLeftArmRaised && bDetectRightArmRaised)
 		{
-			glColor4f((float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), 0.5);
-		}
-		else
-		{
 			glColor4f(0.3, 0.3, 1.0, 0.2);
 		}
+		else if (bTouchObject)
+		{
+			glColor4f((float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), 0.5);
+		}
 		glTranslatef(v4PosRain[i].x, v4PosRain[i].y, v4PosRain[i].z);
-		//changing the scale of the cube to mimic raindrops
-		if (bDetectLeftArmRaised && bDetectRightArmRaised)
+		//changing the size of the cube to mimic raindrops
+		if (bDetectLeftArmRaised && bDetectRightArmRaised || bTouchObject)
 		{
 			glScalef(0.2f, 2.5f, 0.2f);
 			glutSolidCube(0.05);
@@ -72,6 +73,10 @@ void drawEnvironment()
 	glTranslatef(0.0, 0.0, 0.0);
 	glutSolidSphere(50, 180, 180);
 	glPopMatrix();
+
+	//Move everything back and closer to the user
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 1.0);
 
 	//Floor
 	glPushMatrix();
@@ -490,10 +495,20 @@ void drawEnvironment()
 	//End of the rotate
 	glPopMatrix();
 
+	//End of tranlastion
+	glPopMatrix();
 }
 
 void rotateCamera() 
 {
+	//if (g_iFrameCount < 2500)
+	{
+		double x = 0.5;
+		double z = 1.60;
+		double y = 0.0;
+		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
+	}
+
 	// Rotate the camera
 	static double angle = 0.;
 	static double radius = 3.;
@@ -501,6 +516,7 @@ void rotateCamera()
 	double z = radius*(1 - cos(angle)) - radius / 2;
 	gluLookAt(x, 0, z, 0, 0, radius / 2, 0, 1, 0);
 	angle += 0.01;
+
 }
 
 void drawCoordinate()
@@ -559,7 +575,7 @@ void draw()
 	// Increment frame count
 	g_iFrameCount++;
 
-	if (bDetectLeftArmRaised && bDetectRightArmRaised)
+	if (bDetectLeftArmRaised && bDetectRightArmRaised || bTouchObject)
 	{
 
 		// Change the rain position
