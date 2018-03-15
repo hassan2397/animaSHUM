@@ -1013,19 +1013,19 @@ void drawActions()
 	glPopMatrix();
 	}
 	*/
+	
+	//// Draw if sititng down
+	//if (bDetectSitting)
+	//{
+	//glPushMatrix();
+	//glTranslatef(skeletonPosition[NUI_SKELETON_POSITION_HEAD].x, skeletonPosition[NUI_SKELETON_POSITION_HEAD].y, skeletonPosition[NUI_SKELETON_POSITION_HEAD].z);
+	//glColor3f(0, 0, 0);
+	//glutSolidTeapot(0.15f);
+	//glPopMatrix();
+	//}
+	//
 	/*
-	// Draw if sititng down
-	if (bDetectSitting)
-	{
-	glPushMatrix();
-	glTranslatef(skeletonPosition[NUI_SKELETON_POSITION_HEAD].x, skeletonPosition[NUI_SKELETON_POSITION_HEAD].y, skeletonPosition[NUI_SKELETON_POSITION_HEAD].z);
-	glColor3f(0, 0, 0);
-	glutSolidTeapot(0.15f);
-	glPopMatrix();
-	}
-	*/
-	/*
-	// Draw the hands together action detected
+	Draw the hands together action detected
 	if (bDetectHandsTogether)
 	{
 	glPushMatrix();
@@ -1097,6 +1097,7 @@ void drawAllKinectJoints()
 		glPopMatrix();
 	}
 }
+
 int main(int argc, char* argv[])
 {
 	// Initialize variables

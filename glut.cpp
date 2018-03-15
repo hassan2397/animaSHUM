@@ -18,6 +18,7 @@ Vector4 v4PosRain[10000];
 
 extern Vector4 skeletonPosition[NUI_SKELETON_POSITION_COUNT]; // Current frame position
 
+bool bDetectDistance;
 extern bool bDetectLeftArmRaised; 
 extern bool bDetectRightArmRaised;
 extern bool bTouchObject;
@@ -499,23 +500,72 @@ void drawEnvironment()
 	glPopMatrix();
 }
 
-void rotateCamera() 
+void rotateCamera()
 {
-	//if (g_iFrameCount < 2500)
+	//Fix camera
+	if (bDetectLeftArmRaised && bDetectRightArmRaised)
 	{
-		double x = 0.5;
-		double z = 1.60;
+		double x = 1.0;
 		double y = 0.0;
+		double z = 2.0;
 		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
 	}
 
-	// Rotate the camera
-	static double angle = 0.;
-	static double radius = 3.;
-	double x = radius*sin(angle);
-	double z = radius*(1 - cos(angle)) - radius / 2;
-	gluLookAt(x, 0, z, 0, 0, radius / 2, 0, 1, 0);
-	angle += 0.01;
+	// Get positions
+	Vector4 posHip, posObject;
+	posHip.x = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].x;
+	posHip.y = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].y;
+	posHip.z = skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].z;
+	posObject.x = 0.0;
+	posObject.y = 0.12;
+	posObject.z = 1.0;
+	// Calculate distance
+	float fDistance;
+	fDistance = (posObject.x - posHip.x)*(posObject.x - posHip.x) + (posObject.y - posHip.y)*(posObject.y - posHip.y) + (posObject.z - posHip.z)*(posObject.z - posHip.z);
+	fDistance = sqrt(fDistance);
+	bDetectDistance = false;
+	 if (fDistance < 0.85f && skeletonPosition[NUI_SKELETON_POSITION_HIP_CENTER].x != 0.0)
+	 {	
+			bDetectDistance = true;
+			//Looking from my head to the centre
+			double x = skeletonPosition[NUI_SKELETON_POSITION_HEAD].x;
+			double y = skeletonPosition[NUI_SKELETON_POSITION_HEAD].y;
+			double z = skeletonPosition[NUI_SKELETON_POSITION_HEAD].z + 1;
+			gluLookAt(x, y, z, 0.0, 0.0, 0, 0, 1, 0);
+	 }
+	 else if(fDistance > 0.85f)
+	 {
+		 // Rotate the camera
+		 static double angle = 0.;
+		 static double radius = 2.;
+		 double x = radius*sin(angle);
+		 double z = radius*(1 - cos(angle)) - radius / 2;
+		 gluLookAt(x, 0, z, 0, 0, radius / 2, 0, 1, 0);
+		 angle += 0.01;
+
+		 //translating camera
+		 if (g_iFrameCount < 800)
+		 {
+			 double x = 0.0 + fCameraTranslate;
+			 double z = 0.9;
+			 double y = 0.0;
+			 gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
+			 fCameraTranslate += 0.01; // Increment the translation global variable
+			 if (fCameraTranslate > 2.0)
+				 fCameraTranslate = 0.0;
+		 }
+	 }
+	
+	if (bTouchObject)
+	{
+		// Rotate the camera
+		static double angle = 0.;
+		static double radius = 2.;
+		double x = radius*sin(angle);
+		double z = radius*(1 - cos(angle)) - radius / 2;
+		gluLookAt(x, 0, z, 0, 0, radius / 2, 0, 1, 0);
+		angle += 0.01;
+	}
 
 }
 
