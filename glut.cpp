@@ -15,12 +15,14 @@ double fAngle = 0.0f;
 double fCameraTranslate = 0.0f;
 
 Vector4 v4PosRain[10000];
+Vector4 v4PosHeart[100];
 
 extern Vector4 skeletonPosition[NUI_SKELETON_POSITION_COUNT]; // Current frame position
 
 extern bool bDetectLeftArmRaised; 
 extern bool bDetectRightArmRaised;
 extern bool bTouchObject;
+extern bool bDetectArmSpread;
 
 //Variables for the environment 
 const float fFloorY = -1.3;//Floor
@@ -45,14 +47,18 @@ void drawRain()
 		glPushMatrix();
 		//light blue colour for rain
 		//glColor3f(0.3, 0.3, 0.9);
+
+		//if both arms raised, blue rain appears
 		if (bDetectLeftArmRaised && bDetectRightArmRaised)
 		{
 			glColor4f(0.3, 0.3, 1.0, 0.2);
 		}
+		//if object touched, rainbow confetti(rain) appears
 		else if (bTouchObject)
 		{
 			glColor4f((float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), (float)rand() / (float)(RAND_MAX + 1), 0.5);
 		}
+		//Move rain positions around
 		glTranslatef(v4PosRain[i].x, v4PosRain[i].y, v4PosRain[i].z);
 		//changing the size of the cube to mimic raindrops
 		if (bDetectLeftArmRaised && bDetectRightArmRaised || bTouchObject)
@@ -63,6 +69,38 @@ void drawRain()
 		glPopMatrix();
 	}
 	glDisable(GL_BLEND);
+}
+
+void drawHearts()
+{
+	
+		for (int i = 0; i < 1000; i++)
+		{
+			if (bDetectArmSpread)
+			{
+				glPushMatrix();
+				glTranslatef(v4PosHeart[i].x, v4PosHeart[i].y, v4PosHeart[i].z);
+
+				glPushMatrix();
+				glColor3f(1.0, 0, 0);
+				glRotatef(90, 1.0f, 0.0f, 0.0f);
+				glScalef(1.4f, 1.0f, 1.0f);
+				glutSolidCone(0.1, 0.2, 10, 10);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(0.06, 0.045, 0.0);
+				glutSolidSphere(0.09, 10, 10);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(-0.06, 0.045, 0.0);
+				glutSolidSphere(0.09, 10, 10);
+				glPopMatrix();
+
+				glPopMatrix();
+			}
+		}
 }
 
 void drawEnvironment()
@@ -511,7 +549,7 @@ void rotateCamera()
 
 	// Rotate the camera
 	static double angle = 0.;
-	static double radius = 3.;
+	static double radius = 2.;
 	double x = radius*sin(angle);
 	double z = radius*(1 - cos(angle)) - radius / 2;
 	gluLookAt(x, 0, z, 0, 0, radius / 2, 0, 1, 0);
@@ -562,9 +600,11 @@ void draw()
 	// Draw the xyz coordinate system
 	drawCoordinate();
 
-
 	//draws the rain shapes
 	drawRain();
+
+	//draw the heart shapes
+	drawHearts();
 
 	//draw the environment (done by Luke)
 	drawEnvironment();
@@ -575,19 +615,51 @@ void draw()
 	// Increment frame count
 	g_iFrameCount++;
 
+	//Rain fall happens when either both arms are raised or object is touched
 	if (bDetectLeftArmRaised && bDetectRightArmRaised || bTouchObject)
 	{
-
 		// Change the rain position
 		for (int i = 0; i < 10000; i++)
 		{
 			v4PosRain[i].y = v4PosRain[i].y - 0.05;
 			if (v4PosRain[i].y < fFloorY)
-				v4PosRain[i].y = fFloorY + 3.0;
+				v4PosRain[i].y = fRoofY;
 			//sine function on the rain drops to vary the y values
 			v4PosRain[i].y += sin((float)(g_iFrameCount + i) / 20.0) * 0.00;
 		}
 	}
+
+
+
+	if (bDetectArmSpread)
+	{
+		//Change the heart positions
+		for (int i = 0; i < 100; i++)
+		{
+			if (i % 2 == 0)
+				v4PosHeart[i].y + v4PosHeart[i].y + 0.05;
+			else
+				v4PosHeart[i].y + v4PosHeart[i].y - 0.05;
+
+			//Reset Y positions
+			if (v4PosHeart[i].y > fRoofY)
+				v4PosHeart[i].y = fFloorY;
+			if (v4PosHeart[i].y < fFloorY)
+				v4PosHeart[i].y = fFloorY;
+
+			//Randomize the x y and z values of the hearts
+			v4PosHeart[i].y += sin((float)(g_iFrameCount + i) / 20.0) * 0.05;
+			v4PosHeart[i].x += (float)(rand()) / (float)(RAND_MAX + 1) * 1.0 - 0.5;
+			v4PosHeart[i].z += (float)(rand()) / (float)(RAND_MAX + 1) * 1.0 - 0.5;
+
+			//Reset X positions
+			if (v4PosHeart[i].x < -5.0 || v4PosHeart[i].x > 5.0)
+			{
+				v4PosHeart[i].x = 0;
+			}
+		}
+	}
+	
 }
 
 void setupLighting() 
@@ -683,7 +755,7 @@ bool initOpenGL(int argc, char* argv[])
 		// (float)rand() / (float)(RAND_MAX + 1) is from 0.0 to 1.0
 		// (float)rand() / (float)(RAND_MAX + 1) * 4.0 is from 0.0 to 4.0
 		// (float)rand() / (float)(RAND_MAX + 1) * 4.0 - 2.0 is from -2.0 to 2.0
-		v4PosRain[i].x = (float)rand() / (float)(RAND_MAX + 1) * 4.0 - 2.0; 
+		v4PosRain[i].x = (float)rand() / (float)(RAND_MAX + 1) * 1.0 - 0.5; 
 		v4PosRain[i].y = (float)rand() / (float)(RAND_MAX + 1) * 3.0;
 		v4PosRain[i].z = (float)rand() / (float)(RAND_MAX + 1) * 4.0 - 2.0;
 	}
